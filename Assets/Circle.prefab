@@ -64,6 +64,9 @@ MonoBehaviour:
   followIfVisible: 1
   forceMagnitude: 600
   followAngle: 0
+  brakeForce: 100
+  minDistance: 2.9
+  maxDistance: 25
 --- !u!212 &7651562651680274714
 SpriteRenderer:
   m_ObjectHideFlags: 0
