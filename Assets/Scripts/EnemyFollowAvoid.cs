@@ -35,12 +35,16 @@ public class EnemyFollowAvoid : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        var player = GameObject.FindGameObjectWithTag("Player");
+
+        var targetPos = player.transform.position;
+        targetPos.z = 0f;
 
         var mouseScreen = Input.mousePosition;
         var mouseWorld = Camera.main.ScreenToWorldPoint(mouseScreen);
         mouseWorld.z = 0f;
 
-        var delta = mouseWorld - transform.position;
+        var delta = targetPos - transform.position;
         var dist = delta.magnitude;
         var dir = delta / dist;
 
@@ -53,14 +57,16 @@ public class EnemyFollowAvoid : MonoBehaviour
             var raycastHit = Physics2D.Raycast(transform.position, dir, dist, layerMask);
 
             var perp = Vector3.Cross(dir, Vector3.forward) * .2f;
-            var raycastHit2 = Physics2D.Raycast(transform.position, (mouseWorld + perp - transform.position).normalized, dist, layerMask);
-            var raycastHit3 = Physics2D.Raycast(transform.position, (mouseWorld - perp - transform.position).normalized, dist, layerMask);
+            var raycastHit2 = Physics2D.Raycast(transform.position, (targetPos + perp - transform.position).normalized, dist, layerMask);
+            var raycastHit3 = Physics2D.Raycast(transform.position, (targetPos - perp - transform.position).normalized, dist, layerMask);
 
-            follow = !raycastHit.collider || !raycastHit2.collider || !raycastHit3.collider;
+            follow = raycastHit.transform == player.transform
+                || raycastHit2.transform == player.transform
+                || raycastHit3.transform == player.transform;
 
-            Debug.DrawLine(transform.position, mouseWorld);
-            Debug.DrawLine(transform.position, mouseWorld + perp);
-            Debug.DrawLine(transform.position, mouseWorld - perp);
+            Debug.DrawLine(transform.position, targetPos);
+            Debug.DrawLine(transform.position, targetPos + perp);
+            Debug.DrawLine(transform.position, targetPos - perp);
         }
 
         follow &= dist < maxDistance;
@@ -69,7 +75,7 @@ public class EnemyFollowAvoid : MonoBehaviour
         var rb = GetComponent<Rigidbody2D>();
         if (follow)
         {
-            Debug.DrawLine(transform.position, mouseWorld);
+            Debug.DrawLine(transform.position, targetPos);
 
             dir = Quaternion.AngleAxis(followAngle, Vector3.forward) * dir;
 
