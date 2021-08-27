@@ -26,6 +26,8 @@ public class EnemyFollowAvoid : MonoBehaviour
     [Range(0f, 25f)]
     float maxDistance = 25f;
 
+    Vector3 targetPos;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,14 +39,14 @@ public class EnemyFollowAvoid : MonoBehaviour
     {
         var player = GameObject.FindGameObjectWithTag("Player");
 
-        var targetPos = player.transform.position;
-        targetPos.z = 0f;
+        var newTargetPos = player.transform.position;
+        newTargetPos.z = 0f;
 
         var mouseScreen = Input.mousePosition;
         var mouseWorld = Camera.main.ScreenToWorldPoint(mouseScreen);
         mouseWorld.z = 0f;
 
-        var delta = targetPos - transform.position;
+        var delta = newTargetPos - transform.position;
         var dist = delta.magnitude;
         var dir = delta / dist;
 
@@ -57,16 +59,16 @@ public class EnemyFollowAvoid : MonoBehaviour
             var raycastHit = Physics2D.Raycast(transform.position, dir, dist, layerMask);
 
             var perp = Vector3.Cross(dir, Vector3.forward) * .2f;
-            var raycastHit2 = Physics2D.Raycast(transform.position, (targetPos + perp - transform.position).normalized, dist, layerMask);
-            var raycastHit3 = Physics2D.Raycast(transform.position, (targetPos - perp - transform.position).normalized, dist, layerMask);
+            var raycastHit2 = Physics2D.Raycast(transform.position, (newTargetPos + perp - transform.position).normalized, dist, layerMask);
+            var raycastHit3 = Physics2D.Raycast(transform.position, (newTargetPos - perp - transform.position).normalized, dist, layerMask);
 
             follow = raycastHit.transform == player.transform
                 || raycastHit2.transform == player.transform
                 || raycastHit3.transform == player.transform;
 
-            Debug.DrawLine(transform.position, targetPos);
-            Debug.DrawLine(transform.position, targetPos + perp);
-            Debug.DrawLine(transform.position, targetPos - perp);
+            Debug.DrawLine(transform.position, newTargetPos);
+            Debug.DrawLine(transform.position, newTargetPos + perp);
+            Debug.DrawLine(transform.position, newTargetPos - perp);
         }
 
         follow &= dist < maxDistance;
@@ -75,17 +77,20 @@ public class EnemyFollowAvoid : MonoBehaviour
         var rb = GetComponent<Rigidbody2D>();
         if (follow)
         {
-            Debug.DrawLine(transform.position, targetPos);
+            targetPos = newTargetPos;
 
-            dir = Quaternion.AngleAxis(followAngle, Vector3.forward) * dir;
-
-            rb.AddForce(dir * forceMagnitude * Time.deltaTime);
+            Debug.DrawLine(transform.position, newTargetPos);
             //GetComponent<EnemyBase>().targetDir = dir;
         }
         else
         {
             //Debug.DrawLine(transform.position, raycastHit.point, Color.grey);
-            rb.AddForce(-rb.velocity * brakeForce * Time.deltaTime);
+            //rb.AddForce(-rb.velocity * brakeForce * Time.deltaTime);
         }
+
+
+        dir = Quaternion.AngleAxis(followAngle, Vector3.forward) * dir;
+
+        rb.AddForce(dir * forceMagnitude * Time.deltaTime);
     }
 }
