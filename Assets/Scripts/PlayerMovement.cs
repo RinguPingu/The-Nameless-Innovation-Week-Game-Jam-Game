@@ -35,6 +35,6 @@ public class PlayerMovement : MonoBehaviour
             mousePosition.y - transform.position.y
         );
 
-        transform.up = direction;
+        //transform.up = direction;
     }
 }

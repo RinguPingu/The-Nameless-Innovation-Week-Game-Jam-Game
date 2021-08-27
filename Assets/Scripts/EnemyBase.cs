@@ -8,7 +8,12 @@ public class EnemyBase : MonoBehaviour
     public float maxSpeed;
 
     [HideInInspector]
+    [System.NonSerialized]
     public Vector3 targetDir;
+
+    [HideInInspector]
+    [System.NonSerialized]
+    public bool canMove = true;
 
 
     // Start is called before the first frame update

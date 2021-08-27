@@ -26,71 +26,96 @@ public class EnemyFollowAvoid : MonoBehaviour
     [Range(0f, 25f)]
     float maxDistance = 25f;
 
+    [SerializeField]
+    [Tooltip("Tags to follow by order of priority")]
+    string[] tagsToFollow;
+
+    [SerializeField]
+    [Tooltip("Tags to follow by order of priority")]
+    float randomTargetOffsetDistance = 0f;
+
     Vector3 targetPos;
+    Vector3 randomTargetOffset;
+    float lastUpdatedRandomTargetOffset;
 
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
     void Update()
     {
-        var player = GameObject.FindGameObjectWithTag("Player");
+        if (!GetComponent<EnemyBase>().canMove)
+            return;
 
-        var newTargetPos = player.transform.position;
-        newTargetPos.z = 0f;
-
-        var mouseScreen = Input.mousePosition;
-        var mouseWorld = Camera.main.ScreenToWorldPoint(mouseScreen);
-        mouseWorld.z = 0f;
-
-        var delta = newTargetPos - transform.position;
-        var dist = delta.magnitude;
-        var dir = delta / dist;
-
-        bool follow = true;
-
-        if (followIfVisible)
+        if (Time.time - lastUpdatedRandomTargetOffset > 2f)
         {
-            var layerMask = ~(1 << LayerMask.NameToLayer("Enemy"));
-
-            var raycastHit = Physics2D.Raycast(transform.position, dir, dist, layerMask);
-
-            var perp = Vector3.Cross(dir, Vector3.forward) * .2f;
-            var raycastHit2 = Physics2D.Raycast(transform.position, (newTargetPos + perp - transform.position).normalized, dist, layerMask);
-            var raycastHit3 = Physics2D.Raycast(transform.position, (newTargetPos - perp - transform.position).normalized, dist, layerMask);
-
-            follow = raycastHit.transform == player.transform
-                || raycastHit2.transform == player.transform
-                || raycastHit3.transform == player.transform;
-
-            Debug.DrawLine(transform.position, newTargetPos);
-            Debug.DrawLine(transform.position, newTargetPos + perp);
-            Debug.DrawLine(transform.position, newTargetPos - perp);
+            randomTargetOffset = Random.insideUnitCircle * randomTargetOffsetDistance;
+            lastUpdatedRandomTargetOffset = Time.time;
         }
 
-        follow &= dist < maxDistance;
-        follow &= dist > minDistance;
+
 
         var rb = GetComponent<Rigidbody2D>();
-        if (follow)
+
+        foreach (var tag in tagsToFollow)
         {
-            targetPos = newTargetPos;
+            var target = GameObject.FindGameObjectWithTag(tag);
+
+            var newTargetPos = target.transform.position + randomTargetOffset;
+            newTargetPos.z = 0f;
+
+            var mouseScreen = Input.mousePosition;
+            var mouseWorld = Camera.main.ScreenToWorldPoint(mouseScreen);
+            mouseWorld.z = 0f;
+
+            var delta = newTargetPos - transform.position;
+            var dist = delta.magnitude;
+            var dir = delta / dist;
+
+            bool follow = true;
+
+            if (followIfVisible)
+            {
+                var layerMask = ~(1 << gameObject.layer);
+
+                var raycastHit = Physics2D.Raycast(transform.position, dir, maxDistance, layerMask);
+
+                var perp = Vector3.Cross(dir, Vector3.forward) * .2f;
+                var raycastHit2 = Physics2D.Raycast(transform.position, (newTargetPos + perp - transform.position).normalized, maxDistance, layerMask);
+                var raycastHit3 = Physics2D.Raycast(transform.position, (newTargetPos - perp - transform.position).normalized, maxDistance, layerMask);
+
+                follow = raycastHit.transform == target.transform
+                    || raycastHit2.transform == target.transform
+                    || raycastHit3.transform == target.transform;
+
+                Debug.DrawLine(transform.position, newTargetPos);
+                Debug.DrawLine(transform.position, newTargetPos + perp);
+                Debug.DrawLine(transform.position, newTargetPos - perp);
+            }
+
+            //follow &= dist < maxDistance;
+            //follow &= dist > minDistance;
+
+            if (follow)
+            {
+                targetPos = newTargetPos;
+                //GetComponent<EnemyBase>().targetDir = dir;
+                break;
+            }
+            else
+            {
+                //Debug.DrawLine(transform.position, raycastHit.point, Color.grey);
+                //rb.AddForce(-rb.velocity * brakeForce * Time.deltaTime);
+            }
 
             Debug.DrawLine(transform.position, newTargetPos);
-            //GetComponent<EnemyBase>().targetDir = dir;
-        }
-        else
-        {
-            //Debug.DrawLine(transform.position, raycastHit.point, Color.grey);
-            //rb.AddForce(-rb.velocity * brakeForce * Time.deltaTime);
         }
 
+        var dir2 = (targetPos - transform.position).normalized;
+        dir2 = Quaternion.AngleAxis(followAngle, Vector3.forward) * dir2;
 
-        dir = Quaternion.AngleAxis(followAngle, Vector3.forward) * dir;
-
-        rb.AddForce(dir * forceMagnitude * Time.deltaTime);
+        rb.AddForce(dir2 * forceMagnitude * Time.deltaTime);
     }
 }
