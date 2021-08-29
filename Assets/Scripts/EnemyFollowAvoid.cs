@@ -117,7 +117,7 @@ public class EnemyFollowAvoid : MonoBehaviour
             return;
 
         var dir2 = (targetPos - transform.position).normalized;
-        dir2 = Quaternion.AngleAxis(followAngle, Vector3.forward) * dir2;
+        dir2 = Quaternion.AngleAxis(followAngle * (transform.GetSiblingIndex() % 2 == 0 ? -1 : 1), Vector3.forward) * dir2;
 
         rb.AddForce(dir2 * forceMagnitude * Time.deltaTime);
     }

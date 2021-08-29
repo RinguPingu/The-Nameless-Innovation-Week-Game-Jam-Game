@@ -94,10 +94,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followIfVisible: 1
   forceMagnitude: 600
-  followAngle: 0
+  followAngle: 50
   brakeForce: 100
-  minDistance: 1
-  maxDistance: 5
+  minDistance: 3
+  maxDistance: 6
   tagsToFollow:
   - Player
   randomTargetOffsetDistance: 0
@@ -201,7 +201,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.67, y: 0.2}
+  m_Size: {x: 0.67, y: 0.3}
   m_Direction: 1
 --- !u!1001 &1178329972
 PrefabInstance:

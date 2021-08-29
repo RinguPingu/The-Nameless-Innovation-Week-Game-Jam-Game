@@ -54,6 +54,8 @@ public class EnemyShoot : MonoBehaviour
                     lastTimeActed = Time.time;
                     GetComponent<EnemyBase>().canMove = false;
                     GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+
+                    GetComponent<EnemyBase>().Animator.SetTrigger("attack");
                 }
             }
             else
@@ -73,7 +75,7 @@ public class EnemyShoot : MonoBehaviour
     void Shoot(Vector3 dir)
     {
         var proj = Instantiate(projectileProto);
-        proj.transform.position = transform.position + dir * .7f;
+        proj.transform.position = transform.position + new Vector3(dir.x * .85f, dir.y * .45f);
         proj.GetComponent<Rigidbody2D>().velocity = dir * projectileSpeed;
     }
 }

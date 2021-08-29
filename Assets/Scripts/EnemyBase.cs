@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class EnemyBase : MonoBehaviour
@@ -15,11 +16,14 @@ public class EnemyBase : MonoBehaviour
     [System.NonSerialized]
     public bool canMove = true;
 
+    private Animator animator;
+    public Animator Animator { get => animator; private set => animator = value; }
+
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        animator = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -34,11 +38,15 @@ public class EnemyBase : MonoBehaviour
 
         rb.velocity = rb.velocity.normalized * Mathf.Clamp(rb.velocity.magnitude, 0f, maxSpeed);
 
-        if (Mathf.Abs(rb.velocity.x) > 0.1f)
+        bool isWalking = Mathf.Abs(rb.velocity.x) > 0.1f;
+
+        if (isWalking)
         {
             var scale = transform.localScale;
             scale.x = Mathf.Abs(scale.x) * Mathf.Sign(-rb.velocity.x);
             transform.localScale = scale;
         }
+
+        Animator.SetBool("isWalking", isWalking);
     }
 }

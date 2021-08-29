@@ -79,7 +79,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a40c090ec085f64bae66b41d6f87ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 3
+  maxSpeed: 2
 --- !u!114 &7651562651680274713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4525ccd6853c95a44b322069dc7f6375, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followIfVisible: 1
+  followIfVisible: 0
   forceMagnitude: 600
   followAngle: 0
   brakeForce: 100
@@ -100,7 +100,7 @@ MonoBehaviour:
   maxDistance: 5
   tagsToFollow:
   - Player
-  randomTargetOffsetDistance: 0
+  randomTargetOffsetDistance: 5
 --- !u!114 &5925945879754925551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,7 +201,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.67, y: 0.2}
+  m_Size: {x: 0.67, y: 0.3}
   m_Direction: 1
 --- !u!1001 &5780881310085567878
 PrefabInstance:

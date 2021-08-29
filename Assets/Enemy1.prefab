@@ -130,7 +130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectileProto: {fileID: 8357333714559247746, guid: 2451c9f71250dac42ada164628933c63, type: 3}
   maxDistance: 5
-  aimDelay: 1
+  aimDelay: 0.45
   shootDelay: 1.33
   projectileSpeed: 5
 --- !u!212 &7651562651680274714
@@ -219,7 +219,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.67, y: 0.2}
+  m_Size: {x: 0.67, y: 0.3}
   m_Direction: 1
 --- !u!1001 &1207482007
 PrefabInstance:
