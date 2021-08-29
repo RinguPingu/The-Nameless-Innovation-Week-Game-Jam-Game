@@ -33,5 +33,12 @@ public class EnemyBase : MonoBehaviour
         //rb.velocity = Vector3.MoveTowards(rb.velocity, targetDir * targetSpeed, Time.deltaTime * acceleration);
 
         rb.velocity = rb.velocity.normalized * Mathf.Clamp(rb.velocity.magnitude, 0f, maxSpeed);
+
+        if (Mathf.Abs(rb.velocity.x) > 0.1f)
+        {
+            var scale = transform.localScale;
+            scale.x = Mathf.Abs(scale.x) * Mathf.Sign(-rb.velocity.x);
+            transform.localScale = scale;
+        }
     }
 }

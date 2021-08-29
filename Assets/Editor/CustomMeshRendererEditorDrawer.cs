@@ -18,6 +18,7 @@ public class CustomMeshRendererEditorDrawer : Editor
         if (EditorGUI.EndChangeCheck())
         {
             renderer.sortingLayerName = name;
+            EditorUtility.SetDirty(target);
         }
         EditorGUILayout.EndHorizontal();
 
@@ -27,6 +28,7 @@ public class CustomMeshRendererEditorDrawer : Editor
         if (EditorGUI.EndChangeCheck())
         {
             renderer.sortingOrder = order;
+            EditorUtility.SetDirty(target);
         }
         EditorGUILayout.EndHorizontal();
 
