@@ -113,6 +113,9 @@ public class EnemyFollowAvoid : MonoBehaviour
             Debug.DrawLine(transform.position, newTargetPos);
         }
 
+        if (targetPos == default(Vector3))
+            return;
+
         var dir2 = (targetPos - transform.position).normalized;
         dir2 = Quaternion.AngleAxis(followAngle, Vector3.forward) * dir2;
 

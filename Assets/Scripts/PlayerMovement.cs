@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody2D rb;
 
     Vector2 movement;
+    Gate beingOpened;
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +22,24 @@ public class PlayerMovement : MonoBehaviour
     {
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
+
+
+        if (Mathf.Abs(movement.x) > 0.01f)
+        {
+            var scale = transform.localScale;
+            scale.x = Mathf.Abs(scale.x) * Mathf.Sign(movement.x);
+            transform.localScale = scale;
+        }
+
+        if (beingOpened)
+        {
+            float progress = beingOpened.Open(Time.deltaTime);
+
+            if (progress >= 1f)
+            {
+                beingOpened = null;
+            }
+        }
     }
 
     void FixedUpdate()
@@ -36,5 +55,23 @@ public class PlayerMovement : MonoBehaviour
         );
 
         //transform.up = direction;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        var gate = collision.collider.gameObject.GetComponent<Gate>();
+
+        if (gate)
+        {
+            beingOpened = gate;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (beingOpened && collision.collider.gameObject == beingOpened.gameObject)
+        {
+            beingOpened = null;
+        }
     }
 }
