@@ -38,7 +38,7 @@ public class EnemyBase : MonoBehaviour
 
         rb.velocity = rb.velocity.normalized * Mathf.Clamp(rb.velocity.magnitude, 0f, maxSpeed);
 
-        bool isWalking = Mathf.Abs(rb.velocity.x) > 0.1f;
+        bool isWalking = Mathf.Abs(rb.velocity.x) > 0.3f;
 
         if (isWalking)
         {
